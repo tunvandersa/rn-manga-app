@@ -1,19 +1,22 @@
 import { StyleSheet, Dimensions } from 'react-native';
 
 const { width } = Dimensions.get('window');
-const itemWidth = (width - 64) / 3;
+const itemWidth = (width - 40) / 3;
 
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    padding: 16,
+    backgroundColor: '#000000',
+    paddingTop: 10,
+    paddingRight: 10,
+    paddingBottom: 10,
+    paddingLeft: 10,
   },
   header: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 16,
-    color: '#333',
+    color: '#fff',
   },
   listContainer: {
     paddingBottom: 16,
@@ -21,10 +24,9 @@ export default StyleSheet.create({
   mangaItem: {
     height: 'auto',
     width: itemWidth,
-    marginBottom: 16,
-    marginRight: 16,
+    marginBottom: 10,
+    marginRight: 10,
     backgroundColor: '#fff',
-    borderRadius: 8,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -37,8 +39,6 @@ export default StyleSheet.create({
   mangaImage: {
     width: '100%',
     height: itemWidth * 1.4,
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
   },
   mangaName: {
     fontSize: 14,

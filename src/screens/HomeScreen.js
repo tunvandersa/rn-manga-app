@@ -2,12 +2,14 @@ import { View, Text, TouchableOpacity, FlatList, Image } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import styles from '../styles/HomeScreen.styles'
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
 const MangaItem = ({ item }) => {
+  const navigation = useNavigation();
   const imageUrl = `https://img.otruyenapi.com/uploads/comics/${item.thumb_url}`;
   
   return (
-    <TouchableOpacity style={styles.mangaItem}>
+    <TouchableOpacity style={styles.mangaItem} onPress={() => {navigation.navigate('Detail', { slug: item.slug })}}>
       <Image 
         source={{ uri: imageUrl }} 
         style={styles.mangaImage}
@@ -17,7 +19,7 @@ const MangaItem = ({ item }) => {
         {item.name}
       </Text>
       <Text style={styles.chapterInfo}>
-        Chapter {item.chaptersLatest[0]?.chapter_name || 'N/A'}
+        Chapter {item.chaptersLatest?.[0]?.chapter_name || 'N/A'}
       </Text>
     </TouchableOpacity>
   );

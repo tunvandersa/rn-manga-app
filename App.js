@@ -1,12 +1,10 @@
-import {View, Text} from 'react-native';
-import React from 'react';
-import HomeScreen from './src/screens/HomeScreen';
 
+import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Route from './src/navigation/Route';
 
 export default function App() {
   return (
-    <View style={{flex: 1}}>
-      <HomeScreen />
-    </View>
+    <Route/>
   );
 }
