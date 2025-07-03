@@ -20,10 +20,10 @@ const ReadScreen = () => {
         uri,
         (width, height) => {
           const ratio = height / width;
-          resolve(ratio); // ✅ Trả về ratio đúng cách
+          resolve(ratio); 
         },
         (error) => {
-          reject(error); // ✅ Bắt lỗi nếu URI không hợp lệ
+          reject(error); 
         }
       );
     });
@@ -92,14 +92,14 @@ const ReadScreen = () => {
               source={{ uri: item.uri }}
               style={{
                 width: screenWidth,
-                height: screenWidth * item.ratio, // giữ đúng tỉ lệ ảnh
+                height: screenWidth * item.ratio, 
                 resizeMode: 'contain',
               }}
             />
           </View>
         )}
-        initialNumToRender={3} // chỉ render 3 ảnh đầu
-        windowSize={5}         // chỉ giữ 5 ảnh trong bộ nhớ
+        initialNumToRender={3} 
+        windowSize={5}         
         maxToRenderPerBatch={5}
       />
 
