@@ -1,3 +1,4 @@
+
 import { View, Text, FlatList, Image, Dimensions, ScrollView, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useRoute } from '@react-navigation/native'
@@ -8,26 +9,10 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 const ReadScreen = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [listImage, setListImage] = useState({});
+  const [listImage, setListImage] = useState([]); 
 
   const route = useRoute();
-
   const chapter_api_data = route.params;
-
-  const getRatio = async (uri) => {
-    return new Promise((resolve, reject) => {
-      Image.getSize(
-        uri,
-        (width, height) => {
-          const ratio = height / width;
-          resolve(ratio); 
-        },
-        (error) => {
-          reject(error); 
-        }
-      );
-    });
-  };
 
   const fetchManga = async () => {
     try {
@@ -38,22 +23,11 @@ const ReadScreen = () => {
         const domain = data.domain_cdn;
         const path = data.item.chapter_path;
 
-        // const images = [];
-        // for (const item of data.item.chapter_image) {
-        //   const uri = `${domain}/${path}/${item.image_file}`;
-        //   const ratio = await getRatio(uri);
-        //   images.push({ uri, ratio });
-        // }
-        // setListImage(images);
-
-        const imagePromises = data.item.chapter_image.map(async (item) => {
-          const uri = `${domain}/${path}/${item.image_file}`;
-          const ratio = await getRatio(uri);
-          return { uri, ratio };
-        });
-
-        const images = await Promise.all(imagePromises);
-        setListImage(images);
+        const initialImages = data.item.chapter_image.map((item) => ({
+          uri: `${domain}/${path}/${item.image_file}`,
+          ratio: 0, 
+        }));
+        setListImage(initialImages);
         setLoading(false);
       }
     } catch (error) {
@@ -81,30 +55,58 @@ const ReadScreen = () => {
       </View>
     );
   }
+
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <FlatList
         data={listImage}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <View style={{ width: screenWidth, alignItems: 'center' }}>
+            {item.ratio === 0 ? (
+             
+              <View
+                style={{
+                  width: screenWidth,
+                  height: screenHeight,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#f0f0f0', // Nền màu xám nhạt
+                }}
+              >
+                <ActivityIndicator size="small" color="#0000ff" />
+              </View>
+            ) : null}
             <Image
               source={{ uri: item.uri }}
               style={{
                 width: screenWidth,
-                height: screenWidth * item.ratio, 
+                height: screenWidth * item.ratio,
                 resizeMode: 'contain',
+              }}
+              onLoad={(event) => {
+                
+                const { width, height } = event.nativeEvent.source;
+                const newRatio = height / width;
+
+                setListImage((prevList) => {
+                  const newList = [...prevList];
+                  newList[index] = { ...newList[index], ratio: newRatio };
+                  return newList;
+                });
+              }}
+              onError={(error) => {
+                console.error('Lỗi tải ảnh:', error.nativeEvent.error);
               }}
             />
           </View>
         )}
-        initialNumToRender={3} 
-        windowSize={5}         
+        initialNumToRender={3}
+        windowSize={5}
         maxToRenderPerBatch={5}
       />
-
     </View>
-  )
-}
+  );
+};
 
-export default ReadScreen
+export default ReadScreen;
