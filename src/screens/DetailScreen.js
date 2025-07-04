@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, ScrollView, FlatList, Button } from 'react-native'
+import { View, Text, Image, TouchableOpacity, ScrollView, FlatList, Button, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useRoute } from '@react-navigation/native'
 import axios from 'axios'
@@ -42,8 +42,9 @@ const DetailScreen = () => {
 
   if (loading) {
     return (
-      <View>
-        <Text>Đang tải...</Text>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Đợi chút, truyện đang được tải ...</Text>
       </View>
     );
   }
@@ -62,7 +63,9 @@ const DetailScreen = () => {
 
   }
 
-  const listChapter = manga.chapters[0];
+  const listChapter = (manga.chapters && manga.chapters.length > 0)
+    ? manga.chapters[0]
+    : null;
 
   return (
     <View style={{ flexDirection: 'column', flex: 1, padding: 10 }}>
@@ -117,7 +120,7 @@ const DetailScreen = () => {
               </Text>
             ))}
           </View>
-          <ScrollView style={{flex: 1}}>
+          <ScrollView style={{ flex: 1 }}>
             <Text>{manga.content.replace(/<\/?p>/g, '')}</Text>
           </ScrollView>
         </View>
@@ -127,26 +130,33 @@ const DetailScreen = () => {
           DANH SÁCH CHƯƠNG
         </Text>
       </View>
-      <View style={{ flex: 1 }}>
-        <FlatList
-          data={[...listChapter.server_data].reverse()}
-          renderItem={({ item, index }) => (
-            <TouchableOpacity onPress={() => { navigation.navigate('Read', item.chapter_api_data) }}>
-              <View
-                style={{
-                  height: 1,
-                  backgroundColor: '#ccc',
-                  marginHorizontal: 3
-                }}
-              />
-              <Text style={{ fontSize: 16, paddingBottom: 10 }}>
-                Chapter {item.chapter_name}
-              </Text>
-            </TouchableOpacity>
-          )}
-          keyExtractor={(item, index) => index.toString()}
-        />
-      </View>
+
+      {
+        listChapter?.server_data?.length > 0 ? (
+          <View style={{ flex: 1 }}>
+            <FlatList
+              data={[...listChapter.server_data].reverse()}
+              renderItem={({ item, index }) => (
+                <TouchableOpacity onPress={() => { navigation.navigate('Read', item.chapter_api_data) }}>
+                  <View
+                    style={{
+                      height: 1,
+                      backgroundColor: '#ccc',
+                      marginHorizontal: 3
+                    }}
+                  />
+                  <Text style={{ fontSize: 16, paddingBottom: 10 }}>
+                    Chapter {item.chapter_name}
+                  </Text>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+            />
+          </View>
+        ) : (
+          <Text style={{ textAlign: 'center', color: '#0000DD' }}>Chúng tôi đang cập nhật chương!!!!!!!</Text>
+        )
+      }
     </View>
   )
 }
