@@ -69,6 +69,14 @@ const DetailScreen = () => {
 
   return (
     <View style={{ flexDirection: 'column', flex: 1, padding: 10 }}>
+
+<TouchableOpacity
+  onPress={() => navigation.goBack()}
+  style={{ padding: 10 }} // padding bên trong icon
+>
+  <Icon name="chevron-left" size={22} color="#222222" />
+</TouchableOpacity>
+
       <View style={{ flexDirection: 'row' }}>
         <View style={{ gap: 2 }}>
           <Image source={{ uri: imageUrl }} style={{ width: 125, height: 200, borderRadius: 5 }} />
@@ -120,7 +128,7 @@ const DetailScreen = () => {
               </Text>
             ))}
           </View>
-          <ScrollView style={{ flex: 1 }}>
+          <ScrollView style={{ flex: 1, borderWidth: 1, borderColor: '#222222', padding: 3, borderRadius: 5 }}>
             <Text>{manga.content.replace(/<\/?p>/g, '')}</Text>
           </ScrollView>
         </View>
